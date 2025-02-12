@@ -70,32 +70,31 @@
                 <h2 class="mb-4">Sign up to your account</h2>
             </div>
 
-            <form class="mt-4" th:action="@{/form}" method="POST">
+            <form class="mt-4" th:action="@{/register/save}" method="POST" th:object="${jobSeeker}">
+                <input type="hidden" th:field="*{jobSeekerId}">
                 <div class="mb-3">
-                    <label for="First Name" class="form-label">First Name</label><span class="text-danger">*</span>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Peter"
-                        required>
+                    <label class="form-label">First Name</label><span class="text-danger">*</span>
+                    <input type="text" class="form-control" id="firstName" placeholder="Peter" th:field="*{firstName}" oninput="validateName(this)">
+                    <span class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="Last Name" class="form-label">Last Name</label><span class="text-danger">*</span>
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Parker"
-                        required>
+                    <label for="lastName" class="form-label">Last Name</label><span class="text-danger">*</span>
+                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Parker" th:field="*{lastName}" oninput="validateName(this)">
+                    <span class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
                 </div>
                 <!-- Password Input -->
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label><span class="text-danger">*</span>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="********"
-                        required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="********" th:field="*{password}">
+                    <span class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                 </div>
-
-
 
                 <!-- Email Input -->
                 <div class="mb-3">
                     <label for="email" class="form-label">Email address</label><span class="text-danger">*</span>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="peter@example.com"
-                        required>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="peter@example.com" th:field="*{emailId}">
+                    <span class="text-danger" th:if="${#fields.hasErrors('emailId')}" th:errors="*{emailId}"></span>
                 </div>
 
                 <div class="mb-3">
@@ -108,9 +107,10 @@
                             <option value="+49">Germany +49</option>
                             <option value="+44">United Kingdom +44</option>
                         </select>
-                        <input type="number" class="form-control" id="email" name="mobileno"
-                            placeholder="8390696378" required>
+                        <input type="number" class="form-control" id="number" name="mobileno"
+                            placeholder="8390696378" th:field="*{mobileNo}">
                     </div>
+                    <span class="text-danger" th:if="${#fields.hasErrors('mobileNo')}" th:errors="*{mobileNo}"></span>
                 </div>
 
                 
@@ -132,6 +132,11 @@
     </div>
 
     <script>
+
+        function validateName(input) {
+            input.value = input.value.replace(/[^a-zA-Z]/g, '');
+        }
+
         function updateCodeDisplay(selectElement) {
           // Set the text content of the select dropdown to the value of the selected option
           selectElement.style.setProperty("--selected-value", selectElement.value);

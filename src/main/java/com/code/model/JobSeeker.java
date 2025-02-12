@@ -5,17 +5,21 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 @Entity
 @Table(name="job_seeker")
+@NoArgsConstructor
 public class JobSeeker {
 
     @Id
-    @Column(name="Seeker_id")
+//    @Column(name="Job_Seeker_Id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private int jobSeekerId;
 
     @Column(name="First_name" , nullable = false)
     @NotBlank(message = "First Name cannot be empty")
