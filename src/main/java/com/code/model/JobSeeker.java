@@ -8,6 +8,10 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -44,7 +48,10 @@ public class JobSeeker {
 	@Pattern(regexp = "^\\d{10}$",message = "Please enter valid phone number")
     private String mobileNo;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
 }

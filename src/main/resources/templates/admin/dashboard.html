@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Admin DashBoard</title>
+<!-- <div th:replace="jobseeker/dashboard :: css"></div> -->
+</head>
+<body>
+
+	<div th:replace="~{jobseeker/dashboard::header}"></div> 
+	<!-- <!-- <div class="main"></div> -->
+	<div class="container">
+		<!-- <span th:if="${session.msg}">
+			<h2 class="text-center text-success">[[${session.msg}]]</h2> <th:block
+				th:text="${@studentServiceImpl.removeSession()}"></th:block>
+		</span> -->
+		<div>
+			<table class="table table-bordered">
+				<thead>
+					<tr class="table-dark text-light">
+						<!-- <th scope="col">ID</th> -->
+						<th scope="col">First Name</th>
+						<th scope="col">Last Name</th>
+						<th scope="col">Email ID</th>
+						<th scope="col">Mobile No</th>
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="tempStudent : ${jobSeekers}">
+						<!-- <td><span th:text="${tempStudent.rollNo}"></span></td> -->
+						<th><span th:text="${tempStudent.firstName}"></span></th>
+						<td><span th:text="${tempStudent.lastName}"></span></td>
+						<td><span th:text="${tempStudent.emailId}"></span></td>
+						<td><span th:text="${tempStudent.phoneNo}"></span></td>
+						<td><!-- <a
+							th:href="@{/student/delete/{rollNo}(rollNo = ${tempStudent.rollNo)}}"
+							class="btn btn-primary">Delete</a> 
+							<a
+							th:href="@{/student/update/{rollNo}(rollNo = ${tempStudent.rollNo)}}"
+							class="btn btn-secondary">Update</a> -->
+							<a th:href="@{/student/delete/{rollNo}(rollNo=${tempStudent.rollNo})}" class="btn btn-primary">Delete</a>
+							<a th:href="@{/student/update/{rollNo}(rollNo=${tempStudent.rollNo})}" class="btn btn-secondary">Update</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+</body>
+</html>

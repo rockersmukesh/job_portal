@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.code.model.JobSeeker;
+import com.code.service.JobSeekerService;
 
 import ch.qos.logback.core.model.Model;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,15 @@ import lombok.AllArgsConstructor;
 @Controller
 public class MainController {
 
+	
 	private JobSeeker jobSeeker;
+
+	@Autowired
+	private JobSeekerService JobSeekerService;
+	
+//	public MainController(JobSeekerService JobSeekerService) {
+//		this.JobSeekerService = JobSeekerService;
+//	}
 
 	@GetMapping("/")
 	public String home() {
@@ -61,8 +70,9 @@ public class MainController {
 		return model;
 	}
 
+
 	@PostMapping("/register/save")
-	public ModelAndView saveRegister(@Valid JobSeeker jobSeeker, BindingResult bindingResult) {
+	public ModelAndView saveRegister(@Valid @ModelAttribute("jobSeeker") JobSeeker jobSeeker, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			ModelAndView modelAndView = new ModelAndView("register");
 			modelAndView.addObject("jobSeeker", jobSeeker);
@@ -70,10 +80,12 @@ public class MainController {
 			return modelAndView;
 		}
 		// Save the jobSeeker object to the database
-		// jobSeekerService.save(jobSeeker);
+		 JobSeekerService.save(jobSeeker);
 		System.out.println(jobSeeker.toString());
-		return new ModelAndView("redirect:/success");
+		return new ModelAndView("redirect:/jobseeker/dashboard");
 	}
+	
+	
 	
 	
 }
