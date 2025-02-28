@@ -8,4 +8,8 @@ public interface JobSeekerService {
     JobSeeker save(JobSeeker jobSeeker);
     
     List<JobSeeker> findAllJobSeekers();
+    
+    boolean deleteJobSeeker(int jobSeekerId);
+    
+    JobSeeker findByEmail(String email);
 }

@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.code.model.JobSeeker;
@@ -83,6 +84,21 @@ public class MainController {
 		 JobSeekerService.save(jobSeeker);
 		System.out.println(jobSeeker.toString());
 		return new ModelAndView("redirect:/jobseeker/dashboard");
+	}
+	
+	@PostMapping("/login")
+	public ModelAndView loginJobSeeker(@RequestParam String email, @RequestParam String password) {
+	    ModelAndView modelAndView = new ModelAndView();
+	    JobSeeker jobSeeker = JobSeekerService.findByEmail(email);
+
+	    if (jobSeeker == null || !jobSeeker.getPassword().equals(password)) {
+	        modelAndView.setViewName("login");
+	        modelAndView.addObject("error", "Invalid email or password");
+	        return modelAndView;
+	    }
+
+	    modelAndView.setViewName("redirect:/jobseeker/dashboard"); // Redirect to dashboard
+	    return modelAndView;
 	}
 	
 	

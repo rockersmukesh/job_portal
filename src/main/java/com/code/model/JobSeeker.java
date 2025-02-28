@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -37,21 +39,21 @@ public class JobSeeker {
     @NotBlank(message = "Password cannot be empty")
     private String password;
     
-    @Column(name="email_id" , nullable = false)
+    @Column(name="email_id" , nullable = false, unique = true)
     @Email(message = "Please enter a valid email id")
     @NotBlank(message = "Email Id cannot be empty")
     private String emailId;
 
-    @Column(name="mobile_no" , nullable = false)
+    @Column(name="mobile_no" , nullable = false,unique = true)
     @NotBlank(message = "Mobile number cannot be empty")
     @Size(min=10,max =  10, message = "Please enter valid phone number")
 	@Pattern(regexp = "^\\d{10}$",message = "Please enter valid phone number")
     private String mobileNo;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
 
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private Timestamp updatedAt;
 
 }

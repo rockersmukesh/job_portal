@@ -2,6 +2,7 @@ package com.code.service.impl;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,24 @@ public class JobSeekerServiceImpl implements JobSeekerService {
 	public List<JobSeeker> findAllJobSeekers() {
 		return jobSeekeRepo.findAll();
 	}
+
+
+	@Override
+	public boolean deleteJobSeeker(int jobSeekerId) {
+		Optional<JobSeeker> dbStudent = jobSeekeRepo.findById(jobSeekerId);
+		 if(dbStudent.isPresent()) {
+			 jobSeekeRepo.delete(dbStudent.get());
+			 return true;
+		 }
+		 return false;
+	}
+
+
+	@Override
+	public JobSeeker findByEmail(String email) {
+		return jobSeekeRepo.findByEmailId(email).orElse(null);
+	}
+	
 
 
 }

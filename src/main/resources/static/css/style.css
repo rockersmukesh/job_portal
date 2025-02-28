@@ -13,10 +13,11 @@ body {
     z-index: 100;
 }
 
-.header .logo {
+.header .logo a{
     font-size: 1.5rem;
     font-weight: bold;
     color:  #4f46e5;
+    text-decoration: none;
 }
 
 .header .navbar-nav a {

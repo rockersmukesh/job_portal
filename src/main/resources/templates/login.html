@@ -82,12 +82,15 @@
                         <a href="#" class="text-primary">Forgot password?</a>
                     </div>
                 </div>
+                <div class="text-danger text-center" th:if="${error}" th:text="${error}"></div>
+                
 
                 <!-- Submit Button -->
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Sign in</button>
                 </div>
 
+            </form>
                 <div class="container text-center mt-4">
                     <button class="google-btn btn">
                         <img th:src="@{/image/google.png}" alt="Google logo">
@@ -96,9 +99,8 @@
                 </div>
 
                 <div class="mt-1">
-                    don't have an account? <a href="register.html">Register</a>
+                    don't have an account? <a th:href="@{register}">Register</a>
                 </div>
-            </form>
         </div>
     </div>
 
