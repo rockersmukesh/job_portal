@@ -1,8 +1,8 @@
 package com.code.controller;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.code.model.JobSeeker;
 import com.code.service.JobSeekerService;
 
-import ch.qos.logback.core.model.Model;
-import lombok.AllArgsConstructor;
+import java.util.Optional;
 
 @Controller
 public class MainController {
@@ -24,7 +23,7 @@ public class MainController {
 	private JobSeeker jobSeeker;
 
 	@Autowired
-	private JobSeekerService JobSeekerService;
+	private JobSeekerService jobSeekerService;
 	
 //	public MainController(JobSeekerService JobSeekerService) {
 //		this.JobSeekerService = JobSeekerService;
@@ -52,6 +51,23 @@ public class MainController {
 		return modelAndView;
 	}
 
+	 @PostMapping("/login")
+    public ModelAndView loginJobSeeker(@RequestParam String email, @RequestParam String password, HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
+        Optional<JobSeeker> jobSeeker = jobSeekerService.findByEmail(email);
+
+        if (jobSeeker.isEmpty() || !jobSeeker.get().getPassword().equals(password)) {
+            modelAndView.setViewName("login");
+            modelAndView.addObject("error", "Invalid email or password");
+            return modelAndView;
+        }
+
+        // Store job seeker in session
+        session.setAttribute("jobSeeker", jobSeeker.get());
+        modelAndView.setViewName("redirect:/jobseeker/dashboard"); // Redirect to dashboard
+        return modelAndView;
+    }
+
 //	@GetMapping("/register")
 //	public String register(ModelAndView model) {
 ////		if(bindingResult.hasErrors()){
@@ -74,34 +90,59 @@ public class MainController {
 
 	@PostMapping("/register/save")
 	public ModelAndView saveRegister(@Valid @ModelAttribute("jobSeeker") JobSeeker jobSeeker, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
+		if(bindingResult.hasErrors()) {
 			ModelAndView modelAndView = new ModelAndView("register");
 			modelAndView.addObject("jobSeeker", jobSeeker);
 			System.out.println(bindingResult.getAllErrors());
 			return modelAndView;
 		}
+
+		Optional<JobSeeker> existingJobSeeker = jobSeekerService.findByEmail(jobSeeker.getEmailId());
+		if(existingJobSeeker.isPresent()) {
+			ModelAndView modelAndView = new ModelAndView("register");
+			modelAndView.addObject("error", "Email already exists");
+			modelAndView.addObject("jobSeeker", jobSeeker);
+
+			return modelAndView;
+		}
 		// Save the jobSeeker object to the database
-		 JobSeekerService.save(jobSeeker);
+		 jobSeekerService.save(jobSeeker);
 		System.out.println(jobSeeker.toString());
 		return new ModelAndView("redirect:/jobseeker/dashboard");
 	}
-	
-	@PostMapping("/login")
-	public ModelAndView loginJobSeeker(@RequestParam String email, @RequestParam String password) {
-	    ModelAndView modelAndView = new ModelAndView();
-	    JobSeeker jobSeeker = JobSeekerService.findByEmail(email);
 
-	    if (jobSeeker == null || !jobSeeker.getPassword().equals(password)) {
-	        modelAndView.setViewName("login");
-	        modelAndView.addObject("error", "Invalid email or password");
-	        return modelAndView;
-	    }
+	@GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); // Invalidate the session
+        return "redirect:/"; // Redirect to login page
+    }
+	
+	// @PostMapping("/login")
+	// public ModelAndView loginJobSeeker(@RequestParam String email, @RequestParam String password) {
+	//     ModelAndView modelAndView = new ModelAndView();
+	//     Optional<JobSeeker> jobSeeker = jobSeekerService.findByEmail(email);
 
-	    modelAndView.setViewName("redirect:/jobseeker/dashboard"); // Redirect to dashboard
-	    return modelAndView;
-	}
-	
-	
+	//     if (jobSeeker.isEmpty() || !jobSeeker.get().getPassword().equals(password)) {
+	//         modelAndView.setViewName("login");
+	//         modelAndView.addObject("error", "Invalid email or password");
+	//         return modelAndView;
+	//     }
+
+	//     modelAndView.setViewName("redirect:/jobseeker/dashboard"); // Redirect to dashboard
+	//     return modelAndView;
+	// }
+
+	// @GetMapping("/logout")
+	// public String logout(HttpServletRequest request, HttpServletResponse response) {
+
+	// 	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+	// 	if (authentication != null) {
+	// 		new SecurityContextLogoutHandler().logout(request, response, authentication);
+	// 	}
+
+	// 	return "redirect:/";
+	// }
 	
 	
 }

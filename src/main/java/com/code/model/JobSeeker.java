@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -23,9 +21,8 @@ import java.time.LocalDateTime;
 public class JobSeeker {
 
     @Id
-//    @Column(name="Job_Seeker_Id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int jobSeekerId;
+    private int jobSeekerId;
 
     @Column(name="First_name" , nullable = false)
     @NotBlank(message = "First Name cannot be empty")
@@ -44,16 +41,21 @@ public class JobSeeker {
     @NotBlank(message = "Email Id cannot be empty")
     private String emailId;
 
-    @Column(name="mobile_no" , nullable = false,unique = true)
+    @Column(name="mobile_no" , nullable = false, unique = true)
     @NotBlank(message = "Mobile number cannot be empty")
-    @Size(min=10,max =  10, message = "Please enter valid phone number")
-	@Pattern(regexp = "^\\d{10}$",message = "Please enter valid phone number")
+    @Size(min=10, max=10, message = "Please enter valid phone number")
+    @Pattern(regexp = "^\\d{10}$", message = "Please enter valid phone number")
     private String mobileNo;
+
+    // @Enumerated(EnumType.STRING)
+    // private UserRole role;  // ENUM: ADMIN, JOBSEEKER, RECRUITER
+
+    @Column
+    private String resetToken;
 
     @CreationTimestamp
     private Timestamp createdAt;
 
     @UpdateTimestamp
     private Timestamp updatedAt;
-
 }

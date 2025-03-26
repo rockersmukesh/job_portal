@@ -1,5 +1,8 @@
 package com.code.model;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,10 +11,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Recruiter {
 	
 	@Id
@@ -47,7 +54,20 @@ public class Recruiter {
 	@NotBlank(message = "Company Location cannot be empty")
 	private String companyLocation;
 	
-//	@OneToMany(mappedBy = "recruiter")
-//	private Job job;
+	@OneToMany(mappedBy = "recruiter",cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Job> jobId;
 
+	@Override
+	public String toString() {
+		return "Recruiter{" +
+				"recruiterId=" + recruiterId +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", emailId='" + emailId + '\'' +
+				", password='" + password + '\'' +
+				", mobileNo='" + mobileNo + '\'' +
+				", companyName='" + companyName + '\'' +
+				", companyLocation='" + companyLocation + '\'' +
+				'}';
+	}
 }

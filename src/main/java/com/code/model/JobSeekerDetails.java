@@ -30,5 +30,4 @@ public class JobSeekerDetails {
 
     @OneToMany(targetEntity = Skills.class, cascade = CascadeType.ALL, mappedBy = "jobSeekerDetails")
     private List<Skills> skills;
-
 }
