@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.code.model.Admin;
 import com.code.model.JobSeeker;
+import com.code.service.AdminService;
 import com.code.service.JobSeekerService;
 
 import java.util.Optional;
@@ -19,7 +21,9 @@ import java.util.Optional;
 @Controller
 public class MainController {
 
-	
+	@Autowired
+    private AdminService adminService;
+
 	private JobSeeker jobSeeker;
 
 	@Autowired
@@ -44,29 +48,50 @@ public class MainController {
 		return "job";
 	}
 
+	// @GetMapping("/login")
+	// public ModelAndView login() {
+	// 	ModelAndView modelAndView = new ModelAndView("login");
+	// 	modelAndView.addObject("jobseeker",jobSeeker);
+	// 	return modelAndView;
+	// }
+
 	@GetMapping("/login")
-	public ModelAndView login() {
-		ModelAndView modelAndView = new ModelAndView("login");
-		modelAndView.addObject("jobseeker",jobSeeker);
-		return modelAndView;
-	}
+    public String showLoginForm() {
+        return "login"; // Shared login page for both Admin and JobSeeker
+    }
 
-	 @PostMapping("/login")
-    public ModelAndView loginJobSeeker(@RequestParam String email, @RequestParam String password, HttpSession session) {
+	@PostMapping("/login")
+    public ModelAndView login(@RequestParam String email, @RequestParam String password, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
-        Optional<JobSeeker> jobSeeker = jobSeekerService.findByEmail(email);
 
-        if (jobSeeker.isEmpty() || !jobSeeker.get().getPassword().equals(password)) {
-            modelAndView.setViewName("login");
-            modelAndView.addObject("error", "Invalid email or password");
+        // Check if the user is an Admin
+        Admin admin = adminService.findByEmailAndPassword(email, password);
+        if (admin != null) {
+            session.setAttribute("currentAdmin", admin);
+            modelAndView.setViewName("redirect:/admin/dashboard");
             return modelAndView;
         }
 
-        // Store job seeker in session
-        session.setAttribute("jobSeeker", jobSeeker.get());
-        modelAndView.setViewName("redirect:/jobseeker/dashboard"); // Redirect to dashboard
+        // Check if the user is a JobSeeker
+        JobSeeker jobSeeker = jobSeekerService.findByEmail(email).orElse(null);
+        if (jobSeeker != null && jobSeeker.getPassword().equals(password)) {
+            session.setAttribute("jobSeeker", jobSeeker);
+            modelAndView.setViewName("redirect:/jobseeker/dashboard");
+            return modelAndView;
+        }
+
+        // If neither Admin nor JobSeeker, return an error
+        modelAndView.setViewName("login");
+        modelAndView.addObject("error", "Invalid email or password");
         return modelAndView;
     }
+
+    // Admin Logout
+    // @GetMapping("/logout")
+    // public String logout(HttpSession session) {
+    //     session.invalidate(); // Invalidate the session
+    //     return "redirect:/admin/login"; // Redirect to login page
+    // }
 
 //	@GetMapping("/register")
 //	public String register(ModelAndView model) {

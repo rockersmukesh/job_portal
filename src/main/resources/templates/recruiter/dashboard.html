@@ -57,7 +57,7 @@
         <div class="dropdown">
             <button class="btn text-white dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <img th:src="@{/uploads/{profilePhoto}(profilePhoto=${profilePhoto})}" class="rounded-circle avatar me-2" height="45" alt="Avatar"/>
-                Welcome, <span th:if="${session.recruiter != null}" th:text="${session.recruiter.firstName}">Guest</span>
+                Welcome, <span th:if="${session.currentRecruiter != null}" th:text="${session.currentRecruiter.firstName}">Guest</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" th:href="@{/recruiter/profile}"><i class="fas fa-user-edit"></i> Manage Profile</a></li>
@@ -110,7 +110,7 @@
             <div class="card job-card p-3">
                 <h4 class="fw-bold">Manage Job Postings</h4>
                 <p>View, edit, or delete your job postings.</p>
-                <a th:href="@{/recruiter/jobs}" class="btn btn-primary w-100">Go to Job Postings</a>
+                <a th:href="@{/recruiter/manage-job}" class="btn btn-primary w-100">Go to Job Postings</a>
             </div>
         </div>
         <div class="col-md-3">

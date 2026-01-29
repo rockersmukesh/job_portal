@@ -6,9 +6,16 @@ import java.util.Optional;
 import com.code.model.JobSeeker;
 
 public interface JobSeekerService {
+
+    void saveOrUpdate(JobSeeker jobSeeker);
+    
+    JobSeeker findById(int id);
+
     JobSeeker save(JobSeeker jobSeeker);
     
     List<JobSeeker> findAllJobSeekers();
+
+    long countJobSeekers();
     
     boolean deleteJobSeeker(int jobSeekerId);
 

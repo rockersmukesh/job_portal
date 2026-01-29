@@ -2,6 +2,8 @@ package com.code.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,11 +11,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -54,20 +55,25 @@ public class Recruiter {
 	@NotBlank(message = "Company Location cannot be empty")
 	private String companyLocation;
 	
-	@OneToMany(mappedBy = "recruiter",cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Job> jobId;
+	@OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
+	@JsonIgnore
+	@ToString.Exclude
+	private List<Job> jobs;
 
-	@Override
-	public String toString() {
-		return "Recruiter{" +
-				"recruiterId=" + recruiterId +
-				", firstName='" + firstName + '\'' +
-				", lastName='" + lastName + '\'' +
-				", emailId='" + emailId + '\'' +
-				", password='" + password + '\'' +
-				", mobileNo='" + mobileNo + '\'' +
-				", companyName='" + companyName + '\'' +
-				", companyLocation='" + companyLocation + '\'' +
-				'}';
-	}
+	@Column(nullable = false)
+    private boolean approvalStatus;
+
+	// @Override
+	// public String toString() {
+	// 	return "Recruiter{" +
+	// 			"recruiterId=" + recruiterId +
+	// 			", firstName='" + firstName + '\'' +
+	// 			", lastName='" + lastName + '\'' +
+	// 			", emailId='" + emailId + '\'' +
+	// 			", password='" + password + '\'' +
+	// 			", mobileNo='" + mobileNo + '\'' +
+	// 			", companyName='" + companyName + '\'' +
+	// 			", companyLocation='" + companyLocation + '\'' +
+	// 			'}';
+	// }
 }

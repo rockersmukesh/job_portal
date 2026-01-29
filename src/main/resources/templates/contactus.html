@@ -8,5 +8,41 @@
 </head>
 <body>
     <div th:replace="~{base::.header}"></div>
+    <div class="hero-section">
+        <div class="container">
+            <h1 class="text-center">Contact Us</h1>
+            <p class="lead text-center">We’d love to hear from you! Let us know how we can help.</p>
+        </div>
+    </div>
+    
+    <!-- Contact Form Section -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form th:action="@{/contact}" method="post" class="contact-form">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" name="name" placeholder="Your full name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" name="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-control" name="message" rows="5" placeholder="Write your message here..." required></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>

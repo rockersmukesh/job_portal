@@ -51,7 +51,7 @@ public class JobSeeker {
     // private UserRole role;  // ENUM: ADMIN, JOBSEEKER, RECRUITER
 
     @Column
-    private String resetToken;
+    private String resetToken;  
 
     @CreationTimestamp
     private Timestamp createdAt;

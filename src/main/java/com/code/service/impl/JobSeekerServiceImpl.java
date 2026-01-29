@@ -19,6 +19,16 @@ public class JobSeekerServiceImpl implements JobSeekerService {
     private ConcurrentHashMap<String, String> otpStorage = new ConcurrentHashMap<>();
 
     @Override
+    public void saveOrUpdate(JobSeeker jobSeeker) {
+        jobSeekerRepo.save(jobSeeker); // Save or update the job seeker
+    }
+
+    @Override
+    public JobSeeker findById(int id) {
+        return jobSeekerRepo.findById(id).orElse(null);
+    }
+
+    @Override
     public JobSeeker save(JobSeeker jobSeeker) {
         return jobSeekerRepo.save(jobSeeker);
     }
@@ -26,6 +36,11 @@ public class JobSeekerServiceImpl implements JobSeekerService {
     @Override
     public List<JobSeeker> findAllJobSeekers() {
         return jobSeekerRepo.findAll();
+    }
+
+    @Override
+    public long countJobSeekers() {
+        return jobSeekerRepo.count();
     }
 
     @Override

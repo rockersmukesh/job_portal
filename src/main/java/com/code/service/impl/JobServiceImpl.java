@@ -26,6 +26,16 @@ public class JobServiceImpl implements JobService{
     }
 
     @Override
+    public List<Job> findAllJobs() {
+        return jobRepo.findAll();
+    }
+
+    @Override
+    public long countJobs() {
+        return jobRepo.count();
+    }
+
+    @Override
     public Job findJobById(int jobId) {
         return jobRepo.findById(jobId).orElse(null);
     }

@@ -47,6 +47,9 @@ public class JobPostActivityController {
         }
 
         Recruiter recruiter = recruiterService.getCurrentRecruiter();
+        if (recruiter == null) {
+            return "redirect:/recruiter/login"; // Redirect to login if recruiter is not found
+        }
         job.setRecruiter(recruiter);
         jobService.saveJob(job);
         return "redirect:/recruiter/dashboard";
@@ -64,4 +67,6 @@ public class JobPostActivityController {
         jobService.deleteJob(id);
         return "redirect:/recruiter/dashboard";
     }
+
+
 }

@@ -72,10 +72,11 @@ public class RecruiterController {
         return modelAndView;
     }
 
-
-
 	@GetMapping("/dashboard")
 	public String dashboard() {
 		return "recruiter/dashboard";
 	}
+
+    // @GetMapping()
+    
 }

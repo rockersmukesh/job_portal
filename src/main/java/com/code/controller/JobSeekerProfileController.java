@@ -42,7 +42,7 @@ public class JobSeekerProfileController {
         JobSeekerDetails jobSeekerDetails = jobSeekerDetailsService.findByJobSeekerId(jobSeeker.getJobSeekerId());
         if (jobSeekerDetails == null) {
             jobSeekerDetails = new JobSeekerDetails();
-            jobSeekerDetails.setJobSeekerId(jobSeeker); // Associate with the logged-in job seeker
+            jobSeekerDetails.setJobSeeker(jobSeeker); // Associate with the logged-in job seeker
         }
 
         model.addAttribute("jobSeekerDetails", jobSeekerDetails);
@@ -71,38 +71,55 @@ public class JobSeekerProfileController {
     // model.addAttribute("success", "Profile updated successfully!");
     // return "jobseeker/profile";
     // }
-
     @PostMapping("/profile/update")
     public String updateProfile(@ModelAttribute("jobSeekerDetails") JobSeekerDetails updatedDetails,
-            @RequestParam("profilePhotoFile") MultipartFile profilePhotoFile,
-            HttpSession session, Model model) throws IOException {
+                                @RequestParam("profilePhotoFile") MultipartFile profilePhotoFile,
+                                @RequestParam("resumeFile") MultipartFile resumeFile,
+                                HttpSession session, Model model) {
         JobSeeker jobSeeker = (JobSeeker) session.getAttribute("jobSeeker");
 
         if (jobSeeker == null) {
             return "redirect:/login";
         }
 
-        // Fetch the JobSeeker object from the database to ensure it is managed
-        JobSeeker managedJobSeeker = jobSeekerDetailsService.findJobSeekerById(jobSeeker.getJobSeekerId());
-        if (managedJobSeeker == null) {
-            model.addAttribute("error", "Job Seeker not found.");
-            return "jobseeker/profile";
+        try {
+            JobSeekerDetails existingDetails = jobSeekerDetailsService.findByJobSeekerId(jobSeeker.getJobSeekerId());
+            if (existingDetails == null) {
+                existingDetails = new JobSeekerDetails();
+                existingDetails.setJobSeeker(jobSeeker);
+            }
+
+            // Profile photo upload
+            if (!profilePhotoFile.isEmpty()) {
+                String photoFileName = jobSeeker.getJobSeekerId() + "_" + profilePhotoFile.getOriginalFilename();
+                Path photoPath = Paths.get(UPLOAD_DIR + photoFileName);
+                Files.createDirectories(photoPath.getParent());
+                Files.write(photoPath, profilePhotoFile.getBytes());
+                updatedDetails.setProfilePhoto(photoFileName);
+            } else {
+                updatedDetails.setProfilePhoto(existingDetails.getProfilePhoto());
+            }
+
+            // Resume upload
+            if (!resumeFile.isEmpty()) {
+                String resumeFileName = jobSeeker.getJobSeekerId() + "_" + resumeFile.getOriginalFilename();
+                Path resumePath = Paths.get(UPLOAD_DIR + resumeFileName);
+                Files.createDirectories(resumePath.getParent());
+                Files.write(resumePath, resumeFile.getBytes());
+                updatedDetails.setResume(resumeFileName);
+            } else {
+                updatedDetails.setResume(existingDetails.getResume());
+            }
+
+            updatedDetails.setJobSeeker(jobSeeker);
+            jobSeekerDetailsService.save(updatedDetails);
+
+            model.addAttribute("success", "Profile updated successfully!");
+        } catch (IOException e) {
+            model.addAttribute("error", "File upload failed: " + e.getMessage());
         }
 
-        // Handle profile picture upload
-        if (!profilePhotoFile.isEmpty()) {
-            String fileName = managedJobSeeker.getJobSeekerId() + "_" + profilePhotoFile.getOriginalFilename();
-            Path filePath = Paths.get("src/main/resources/static/uploads/" + fileName);
-            Files.createDirectories(filePath.getParent());
-            Files.write(filePath, profilePhotoFile.getBytes());
-            updatedDetails.setProfilePhoto(fileName); // Set the file name in the profilePhoto field
-        }
-
-        updatedDetails.setJobSeekerId(managedJobSeeker); // Associate the managed JobSeeker with the details
-        jobSeekerDetailsService.save(updatedDetails); // Save the updated details
-
-        model.addAttribute("success", "Profile updated successfully!");
-        return "redirect:/jobseeker/profile";
+        model.addAttribute("jobSeekerDetails", updatedDetails);
+        return "jobseeker/profile";
     }
-
 }

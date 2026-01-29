@@ -20,6 +20,10 @@ public class JobSeekerDetailsServiceImpl implements JobSeekerDetailsService{
 
     @Override
     public JobSeekerDetails save(JobSeekerDetails jobSeekerDetails) {
+        JobSeeker managedJobSeeker = jobSeekerRepo.findById(jobSeekerDetails.getJobSeeker().getJobSeekerId())
+                .orElseThrow(() -> new IllegalArgumentException("JobSeeker not found"));
+
+        jobSeekerDetails.setJobSeeker(managedJobSeeker); // Attach the managed entity
         return jobSeekerDetailsRepo.save(jobSeekerDetails);
     }
 
@@ -27,7 +31,7 @@ public class JobSeekerDetailsServiceImpl implements JobSeekerDetailsService{
     public JobSeekerDetails findByJobSeekerId(int jobSeekerId) {
         JobSeeker jobSeeker = new JobSeeker();
         jobSeeker.setJobSeekerId(jobSeekerId); // Create a JobSeeker object with the given ID
-        return jobSeekerDetailsRepo.findByJobSeekerId(jobSeeker);
+        return jobSeekerDetailsRepo.findByJobSeeker(jobSeeker);
     }
 
     @Override
